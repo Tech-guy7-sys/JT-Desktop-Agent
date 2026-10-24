@@ -1,0 +1,55 @@
+name: Publish Agent Jeff Windows release
+on:
+  push:
+    paths:
+      - release-trigger.txt
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (for example v0.1.0)
+        required: true
+        default: v0.1.0
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Choose release version
+        id: meta
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $version = "${{ inputs.version }}"
+          } else {
+            $version = (Get-Content release-trigger.txt -Raw).Trim()
+          }
+          if ($version -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+$') { throw "Version must match vMAJOR.MINOR.PATCH" }
+          "version=$($version.TrimStart('v'))" >> $env:GITHUB_OUTPUT
+          "tag=$version" >> $env:GITHUB_OUTPUT
+      - name: Restore
+        run: dotnet restore AgentJeff.csproj
+      - name: Build
+        run: dotnet build AgentJeff.csproj --configuration Release --no-restore
+      - name: Publish self-contained Windows x64 app
+        run: dotnet publish AgentJeff.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true --output artifacts/Agent-Jeff-win-x64
+      - name: Package and checksum
+        shell: pwsh
+        run: |
+          Compress-Archive -Path artifacts/Agent-Jeff-win-x64/* -DestinationPath "artifacts/Agent-Jeff-Windows-x64-v${{ steps.meta.outputs.version }}.zip" -Force
+          $file = Get-Item "artifacts/Agent-Jeff-Windows-x64-v${{ steps.meta.outputs.version }}.zip"
+          $hash = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLower()
+          "$hash  $($file.Name)" | Set-Content artifacts/SHA256SUMS.txt
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: Agent Jeff ${{ steps.meta.outputs.tag }} — Windows x64
+          generate_release_notes: true
+          files: |
+            artifacts/Agent-Jeff-Windows-x64-v${{ steps.meta.outputs.version }}.zip
+            artifacts/SHA256SUMS.txt
