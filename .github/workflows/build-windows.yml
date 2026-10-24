@@ -15,9 +15,11 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Restore
-        run: dotnet restore AgentJeff.csproj
+        run: dotnet restore tests/AgentJeff.Tests/AgentJeff.Tests.csproj
       - name: Build
         run: dotnet build AgentJeff.csproj --configuration Release --no-restore
+      - name: Run unit tests
+        run: dotnet test tests/AgentJeff.Tests/AgentJeff.Tests.csproj --configuration Release --no-restore
       - name: Publish portable folder
         run: dotnet publish AgentJeff.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true --output artifacts/Agent-Jeff-win-x64
       - name: Upload build artifact
