@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Release version (for example v0.1.0)
+        description: Release version (for example v0.1.1)
         required: true
-        default: v0.1.0
+        default: v0.1.1
 permissions:
   contents: write
 jobs:
@@ -24,32 +24,76 @@ jobs:
         shell: pwsh
         run: |
           if ("${{ github.event_name }}" -eq "workflow_dispatch") {
-            $version = "${{ inputs.version }}"
+            $tag = "${{ inputs.version }}"
           } else {
-            $version = (Get-Content release-trigger.txt -Raw).Trim()
+            $tag = (Get-Content release-trigger.txt -Raw).Trim()
           }
-          if ($version -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+$') { throw "Version must match vMAJOR.MINOR.PATCH" }
-          "version=$($version.TrimStart('v'))" >> $env:GITHUB_OUTPUT
-          "tag=$version" >> $env:GITHUB_OUTPUT
-      - name: Restore
-        run: dotnet restore AgentJeff.csproj
-      - name: Build
+          if ($tag -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+$') { throw "Version must match vMAJOR.MINOR.PATCH" }
+          $version = $tag.TrimStart('v')
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+      - name: Restore application and tests
+        run: dotnet restore tests/AgentJeff.Tests/AgentJeff.Tests.csproj
+      - name: Build application
         run: dotnet build AgentJeff.csproj --configuration Release --no-restore
+      - name: Run unit tests
+        run: dotnet test tests/AgentJeff.Tests/AgentJeff.Tests.csproj --configuration Release --no-restore
       - name: Publish self-contained Windows x64 app
-        run: dotnet publish AgentJeff.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true --output artifacts/Agent-Jeff-win-x64
-      - name: Package and checksum
+        run: dotnet publish AgentJeff.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true --output artifacts/AgentJeff-win-x64
+      - name: Install Inno Setup compiler
         shell: pwsh
         run: |
-          Compress-Archive -Path artifacts/Agent-Jeff-win-x64/* -DestinationPath "artifacts/Agent-Jeff-Windows-x64-v${{ steps.meta.outputs.version }}.zip" -Force
-          $file = Get-Item "artifacts/Agent-Jeff-Windows-x64-v${{ steps.meta.outputs.version }}.zip"
-          $hash = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLower()
-          "$hash  $($file.Name)" | Set-Content artifacts/SHA256SUMS.txt
-      - name: Create GitHub release
+          choco install innosetup --yes --no-progress
+          $iscc = Join-Path ([Environment]::GetFolderPath("ProgramFilesX86")) "Inno Setup 6\ISCC.exe"
+          if (!(Test-Path $iscc)) { throw "Inno Setup compiler not found: $iscc" }
+          "INNO_SETUP_COMPILER=$iscc" >> $env:GITHUB_ENV
+      - name: Build Windows installer
+        shell: pwsh
+        env:
+          PACKAGE_VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          & $env:INNO_SETUP_COMPILER "/DAppVersion=$env:PACKAGE_VERSION" "/DNumericVersion=$env:PACKAGE_VERSION.0" "installer/AgentJeff.iss"
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed with exit code $LASTEXITCODE" }
+      - name: Package portable build and checksums
+        shell: pwsh
+        env:
+          PACKAGE_VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          $portable = "artifacts/Agent-Jeff-Windows-x64-$env:PACKAGE_VERSION-portable.zip"
+          Compress-Archive -Path "artifacts/AgentJeff-win-x64/*" -DestinationPath $portable -Force
+          $setup = Get-ChildItem "artifacts/Agent-Jeff-Setup-*-x64.exe" | Select-Object -First 1
+          if (!$setup -or (Get-Item $setup.FullName).Length -lt 100000) { throw "Expected installer was not created." }
+          if ((Get-Item $portable).Length -lt 100000) { throw "Portable archive is unexpectedly small." }
+          $lines = @()
+          foreach ($file in @($setup.FullName, $portable)) {
+            $hash = (Get-FileHash $file -Algorithm SHA256).Hash.ToLower()
+            $lines += "$hash  $(Split-Path $file -Leaf)"
+          }
+          $lines | Out-File -Encoding ascii "artifacts/SHA256SUMS.txt"
+      - name: Smoke-test silent install and uninstall
+        shell: pwsh
+        run: |
+          $setup = (Get-ChildItem "artifacts/Agent-Jeff-Setup-*-x64.exe" | Select-Object -First 1).FullName
+          $testDir = Join-Path $env:RUNNER_TEMP "AgentJeffInstallerTest"
+          if (Test-Path $testDir) { Remove-Item $testDir -Recurse -Force }
+          $install = Start-Process -FilePath $setup -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /DIR=$testDir" -Wait -PassThru
+          if ($install.ExitCode -ne 0 -or !(Test-Path (Join-Path $testDir "AgentJeff.exe"))) { throw "Installer smoke test failed." }
+          $uninstaller = Join-Path $testDir "unins000.exe"
+          if (!(Test-Path $uninstaller)) { throw "Uninstaller was not installed." }
+          $uninstall = Start-Process -FilePath $uninstaller -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART" -Wait -PassThru
+          if ($uninstall.ExitCode -ne 0) { throw "Uninstaller returned $($uninstall.ExitCode)." }
+      - name: Publish tested release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
-          name: Agent Jeff ${{ steps.meta.outputs.tag }} — Windows x64
+          name: Agent Jeff v${{ steps.meta.outputs.version }} — Windows x64
           generate_release_notes: true
+          body: |
+            Standalone JT Desktop Agent repository.
+            Assets include a self-contained Windows x64 installer, portable ZIP and SHA-256 checksums.
+            The workflow runs automated unit tests and a silent install/uninstall smoke test on Windows.
+            This build is not code-signed. CI packaging tests do not replace human feature testing on a normal Windows 11 device.
           files: |
-            artifacts/Agent-Jeff-Windows-x64-v${{ steps.meta.outputs.version }}.zip
+            artifacts/Agent-Jeff-Setup-*-x64.exe
+            artifacts/Agent-Jeff-Windows-x64-${{ steps.meta.outputs.version }}-portable.zip
             artifacts/SHA256SUMS.txt
