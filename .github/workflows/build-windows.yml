@@ -1,4 +1,4 @@
-name: Build Agent Jeff Windows
+name: Build JT Desktop Agent Windows
 on:
   push:
     branches: [main]
@@ -14,17 +14,25 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - name: Restore
+      - name: Restore tests
         run: dotnet restore tests/AgentJeff.Tests/AgentJeff.Tests.csproj
       - name: Build
         run: dotnet build AgentJeff.csproj --configuration Release --no-restore
       - name: Run unit tests
         run: dotnet test tests/AgentJeff.Tests/AgentJeff.Tests.csproj --configuration Release --no-restore
-      - name: Publish portable folder
-        run: dotnet publish AgentJeff.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true --output artifacts/Agent-Jeff-win-x64
-      - name: Upload build artifact
+      - name: Publish Windows x64 portable app
+        run: dotnet publish AgentJeff.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true --output artifacts/JT-Desktop-Agent-win-x64
+      - name: Publish Windows x86 portable app
+        run: dotnet publish AgentJeff.csproj --configuration Release --runtime win-x86 --self-contained true -p:PublishSingleFile=true --output artifacts/JT-Desktop-Agent-win-x86
+      - name: Upload Windows x64 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Agent-Jeff-win-x64
-          path: artifacts/Agent-Jeff-win-x64/
+          name: JT-Desktop-Agent-Windows-x64
+          path: artifacts/JT-Desktop-Agent-win-x64/
+          if-no-files-found: error
+      - name: Upload Windows x86 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JT-Desktop-Agent-Windows-x86
+          path: artifacts/JT-Desktop-Agent-win-x86/
           if-no-files-found: error
