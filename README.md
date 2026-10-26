@@ -1,4 +1,4 @@
-# JT Desktop Agent — JT Desktop Agent
+# JT Desktop Agent — J Tech Digital World
 
 Standalone repository for the JT-branded Windows desktop agent.
 
