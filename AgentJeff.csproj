@@ -6,7 +6,7 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>AgentJeff</AssemblyName>
+    <AssemblyName>JTDesktopAgent</AssemblyName>
     <Product>JT Desktop Agent</Product>
     <Title>JT Desktop Agent</Title>
     <Company>J Tech Digital World</Company>
