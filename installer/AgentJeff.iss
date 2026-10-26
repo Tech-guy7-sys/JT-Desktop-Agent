@@ -8,7 +8,7 @@
   #define NumericVersion "0.1.0.0"
 #endif
 
-#define MyAppExeName "AgentJeff.exe"
+#define MyAppExeName "JTDesktopAgent.exe"
 
 [Setup]
 AppId={{E4C3C9AD-2E4B-4FC1-B2AB-8E4CA0F09132}
