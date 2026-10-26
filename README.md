@@ -1,4 +1,4 @@
-# Agent Jeff — JT Desktop Agent
+# JT Desktop Agent — JT Desktop Agent
 
 Standalone repository for the JT-branded Windows desktop agent.
 
@@ -20,15 +20,15 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 - Initial local file triage using SHA-256 and transparent heuristics.
 
 ## Security boundaries
-Agent Jeff is **not a replacement for Microsoft Defender or another trusted antivirus**. The initial file triage is heuristic and can miss threats or report false positives. It does not provide full real-time protection, guaranteed malware detection, or automatic quarantine. Keep Windows security protection enabled.
+JT Desktop Agent is **not a replacement for Microsoft Defender or another trusted antivirus**. The initial file triage is heuristic and can miss threats or report false positives. It does not provide full real-time protection, guaranteed malware detection, or automatic quarantine. Keep Windows security protection enabled.
 
 Speech recognition does not verify speaker identity; voice input alone must not authorize sensitive actions. Some operations can be blocked by Windows policy or permissions.
 
 ## JT ecosystem integration
-- Product: Agent Jeff
+- Product: JT Desktop Agent
 - Brand: JT
 - AI-facing name: Jeff AI
-- Desktop/device control belongs to Agent Jeff only and must use explicit approvals and least-privilege scopes.
+- Desktop/device control belongs to JT Desktop Agent only and must use explicit approvals and least-privilege scopes.
 - JT AI Core integration is a planned provider/API contract; this source does not claim an unconfigured backend is connected.
 
 This repository holds the native WPF source. Build and test on Windows before treating a package as a verified release. Do not claim a package is signed unless signing is configured and verified.
