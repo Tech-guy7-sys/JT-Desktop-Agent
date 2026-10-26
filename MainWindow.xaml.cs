@@ -50,7 +50,7 @@ public partial class MainWindow : Window
             {
                 ListenButton.IsEnabled = false;
                 SetStatus("WINDOWS SPEECH RECOGNIZER NOT INSTALLED");
-                TranscriptBox.Text = "Windows has no compatible installed speech recognizer. Install a supported Windows speech language in Settings, then reopen Agent Jeff.";
+                TranscriptBox.Text = "Windows has no compatible installed speech recognizer. Install a supported Windows speech language in Settings, then reopen JT Desktop Agent.";
                 return;
             }
             _recognizer = new SpeechRecognitionEngine(recognizerInfo);
@@ -91,7 +91,7 @@ public partial class MainWindow : Window
             ListenButton.Content = "Listening… (click to stop)";
             SetStatus("LISTENING · MICROPHONE ACTIVE");
         }
-        catch (Exception ex) { SetStatus("MICROPHONE ERROR"); MessageBox.Show(this, ex.Message, "Agent Jeff", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { SetStatus("MICROPHONE ERROR"); MessageBox.Show(this, ex.Message, "JT Desktop Agent", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void Stop_Click(object sender, RoutedEventArgs e) => StopListening();
