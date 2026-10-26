@@ -131,7 +131,7 @@ public partial class SecurityCenterWindow : Window
 
     private async void ScheduleScan_Click(object sender, RoutedEventArgs e)
     {
-        var message = "Create a Windows Task Scheduler task that requests a Microsoft Defender quick scan daily at 2:00 AM? Windows may reject this without administrator rights. You can remove the task later in Task Scheduler under JT Agent Jeff Daily Defender Quick Scan.";
+        var message = "Create a Windows Task Scheduler task that requests a Microsoft Defender quick scan daily at 2:00 AM? Windows may reject this without administrator rights. You can remove the task later in Task Scheduler under JT Desktop Agent Daily Defender Quick Scan.";
         if (MessageBox.Show(this, message, "Approve daily scan schedule", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) { ScanStatus.Text = "Daily schedule was not created."; return; }
         try
         {
@@ -147,7 +147,7 @@ public partial class SecurityCenterWindow : Window
             foreach (var arg in new[]
             {
                 "/Create", "/F", "/SC", "DAILY", "/ST", "02:00",
-                "/TN", "JT Agent Jeff Daily Defender Quick Scan",
+                "/TN", "JT Desktop Agent Daily Defender Quick Scan",
                 "/TR", $"\\\"{scanner}\\\" -Scan -ScanType 1"
             }) psi.ArgumentList.Add(arg);
             using var p = Process.Start(psi) ?? throw new InvalidOperationException("Could not start Task Scheduler.");
