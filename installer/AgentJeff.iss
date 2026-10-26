@@ -1,4 +1,4 @@
-#define MyAppName "Agent Jeff"
+#define MyAppName "JT Desktop Agent"
 #define MyAppPublisher "J Tech Digital World"
 
 #ifndef AppVersion
@@ -16,15 +16,15 @@ AppName={#MyAppName}
 AppVersion={#AppVersion}
 AppVerName={#MyAppName} {#AppVersion}
 AppPublisher={#MyAppPublisher}
-DefaultDirName={autopf}\JT Digital World\Agent Jeff
-DefaultGroupName=JT Digital World\Agent Jeff
+DefaultDirName={autopf}\JT Digital World\JT Desktop Agent
+DefaultGroupName=JT Digital World\JT Desktop Agent
 DisableProgramGroupPage=yes
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 PrivilegesRequired=admin
 Uninstallable=yes
 OutputDir=..\artifacts
-OutputBaseFilename=Agent-Jeff-Setup-{#AppVersion}-x64
+OutputBaseFilename=JT-Desktop-Agent-Setup-{#AppVersion}-x64
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -45,8 +45,8 @@ Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription:
 Source: "..\artifacts\AgentJeff-win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\JT Digital World\Agent Jeff"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\Agent Jeff"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autoprograms}\JT Digital World\JT Desktop Agent"; Filename: "{app}\{#MyAppExeName}"
+Name: "{autodesktop}\JT Desktop Agent"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "Launch Agent Jeff"; Flags: postinstall nowait skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "Launch JT Desktop Agent"; Flags: postinstall nowait skipifsilent
