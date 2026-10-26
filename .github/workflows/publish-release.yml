@@ -1,4 +1,4 @@
-name: Publish Agent Jeff Windows release
+name: Publish JT Desktop Agent Windows release
 on:
   push:
     paths:
@@ -59,9 +59,9 @@ jobs:
         env:
           PACKAGE_VERSION: ${{ steps.meta.outputs.version }}
         run: |
-          $portable = "artifacts/Agent-Jeff-Windows-x64-$env:PACKAGE_VERSION-portable.zip"
+          $portable = "artifacts/JT-Desktop-Agent-Windows-x64-$env:PACKAGE_VERSION-portable.zip"
           Compress-Archive -Path "artifacts/AgentJeff-win-x64/*" -DestinationPath $portable -Force
-          $setup = Get-ChildItem "artifacts/Agent-Jeff-Setup-*-x64.exe" | Select-Object -First 1
+          $setup = Get-ChildItem "artifacts/JT-Desktop-Agent-Setup-*-x64.exe" | Select-Object -First 1
           if (!$setup -or (Get-Item $setup.FullName).Length -lt 100000) { throw "Expected installer was not created." }
           if ((Get-Item $portable).Length -lt 100000) { throw "Portable archive is unexpectedly small." }
           $lines = @()
@@ -73,7 +73,7 @@ jobs:
       - name: Smoke-test silent install and uninstall
         shell: pwsh
         run: |
-          $setup = (Get-ChildItem "artifacts/Agent-Jeff-Setup-*-x64.exe" | Select-Object -First 1).FullName
+          $setup = (Get-ChildItem "artifacts/JT-Desktop-Agent-Setup-*-x64.exe" | Select-Object -First 1).FullName
           $testDir = Join-Path $env:RUNNER_TEMP "AgentJeffInstallerTest"
           if (Test-Path $testDir) { Remove-Item $testDir -Recurse -Force }
           $install = Start-Process -FilePath $setup -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /DIR=$testDir" -Wait -PassThru
@@ -86,7 +86,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
-          name: Agent Jeff v${{ steps.meta.outputs.version }} — Windows x64
+          name: JT Desktop Agent v${{ steps.meta.outputs.version }} — Windows x64
           generate_release_notes: true
           body: |
             Standalone JT Desktop Agent repository.
@@ -94,6 +94,6 @@ jobs:
             The workflow runs automated unit tests and a silent install/uninstall smoke test on Windows.
             This build is not code-signed. CI packaging tests do not replace human feature testing on a normal Windows 11 device.
           files: |
-            artifacts/Agent-Jeff-Setup-*-x64.exe
-            artifacts/Agent-Jeff-Windows-x64-${{ steps.meta.outputs.version }}-portable.zip
+            artifacts/JT-Desktop-Agent-Setup-*-x64.exe
+            artifacts/JT-Desktop-Agent-Windows-x64-${{ steps.meta.outputs.version }}-portable.zip
             artifacts/SHA256SUMS.txt
