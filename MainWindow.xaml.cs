@@ -3,6 +3,7 @@ using System.Speech.Recognition;
 using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Win32;
 
 namespace AgentJeff;
 
@@ -150,6 +151,29 @@ public partial class MainWindow : Window
             _securityCenter.Show();
         }
         else _securityCenter.Activate();
+    }
+
+    private async void ReviewFile_Click(object sender, RoutedEventArgs e)
+    {
+        var picker = new OpenFileDialog
+        {
+            Title = "Choose a file for local review",
+            CheckFileExists = true,
+            Multiselect = false
+        };
+        if (picker.ShowDialog(this) != true) return;
+        try
+        {
+            SetStatus("REVIEWING SELECTED FILE");
+            var result = await FileReviewService.ReviewAsync(picker.FileName);
+            TranscriptBox.Text = result.ToDisplayText();
+            SetStatus("FILE REVIEW COMPLETE · LOCAL ONLY");
+        }
+        catch (Exception ex)
+        {
+            SetStatus("FILE REVIEW FAILED");
+            MessageBox.Show(this, ex.Message, "JT Desktop Agent · File review", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     private void SetStatus(string status) => StatusText.Text = status.ToUpperInvariant();
