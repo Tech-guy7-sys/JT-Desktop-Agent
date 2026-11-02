@@ -18,8 +18,8 @@
         </StackPanel>
       </Grid>
     </Border>
-    <Grid Grid.Row="1" ColumnDefinitions="2*,*" Margin="0,20,0,20" ColumnSpacing="18">
-      <Border Grid.Column="0" Background="#151B30" CornerRadius="18" Padding="22">
+    <Grid Grid.Row="1" ColumnDefinitions="2*,*" Margin="0,20,0,20">
+      <Border Grid.Column="0" Margin="0,0,9,0" Background="#151B30" CornerRadius="18" Padding="22">
         <StackPanel Spacing="14">
           <TextBlock Text="Workspace" FontSize="20" FontWeight="SemiBold" Foreground="#F4F5FF"/>
           <TextBlock Text="The cross-platform user interface is running. Connect a supported Jeff AI provider to enable assistant responses." TextWrapping="Wrap" Foreground="#B6BED5"/>
@@ -30,7 +30,7 @@
           <Button x:Name="ReviewButton" Content="Review a file locally" HorizontalAlignment="Left" Click="ReviewFile_Click"/>
         </StackPanel>
       </Border>
-      <Border Grid.Column="1" Background="#151B30" CornerRadius="18" Padding="22">
+      <Border Grid.Column="1" Margin="9,0,0,0" Background="#151B30" CornerRadius="18" Padding="22">
         <StackPanel Spacing="14">
           <TextBlock Text="Safety controls" FontSize="20" FontWeight="SemiBold" Foreground="#F4F5FF"/>
           <TextBlock Text="Microphone" Foreground="#B6BED5"/>
