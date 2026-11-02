@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="JTDesktopAgent.CrossPlatform.MainWindow"
+        Title="JT Desktop Agent"
+        Width="920" Height="680" MinWidth="720" MinHeight="540"
+        Background="#0B1020">
+  <Grid RowDefinitions="Auto,*,Auto" Margin="28">
+    <Border Grid.Row="0" Background="#171D34" CornerRadius="18" Padding="22">
+      <Grid ColumnDefinitions="Auto,*">
+        <Border Width="58" Height="58" CornerRadius="29" Background="#343A70">
+          <TextBlock Text="JT" FontSize="22" FontWeight="Bold" Foreground="#F5F5FF"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+        <StackPanel Grid.Column="1" Margin="18,0,0,0" VerticalAlignment="Center" Spacing="5">
+          <TextBlock Text="JT DESKTOP AGENT" FontSize="12" FontWeight="Bold" Foreground="#AEB7FF"/>
+          <TextBlock Text="Jeff AI workspace" FontSize="25" FontWeight="SemiBold" Foreground="#F4F5FF"/>
+          <TextBlock Text="Cross-platform desktop shell · macOS and Linux" Foreground="#B6BED5"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+    <Grid Grid.Row="1" ColumnDefinitions="2*,*" Margin="0,20,0,20" ColumnSpacing="18">
+      <Border Grid.Column="0" Background="#151B30" CornerRadius="18" Padding="22">
+        <StackPanel Spacing="14">
+          <TextBlock Text="Workspace" FontSize="20" FontWeight="SemiBold" Foreground="#F4F5FF"/>
+          <TextBlock Text="The cross-platform user interface is running. Connect a supported Jeff AI provider to enable assistant responses." TextWrapping="Wrap" Foreground="#B6BED5"/>
+          <TextBlock Text="Activity" FontWeight="SemiBold" Foreground="#E7E9FF" Margin="0,8,0,0"/>
+          <Border Background="#0D1427" CornerRadius="12" Padding="14" MinHeight="150">
+            <TextBlock x:Name="ActivityText" Text="Ready. No desktop actions are enabled in this platform shell yet." TextWrapping="Wrap" Foreground="#D6DAEF"/>
+          </Border>
+          <Button x:Name="ReviewButton" Content="Review a file locally" HorizontalAlignment="Left" Click="ReviewFile_Click"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="1" Background="#151B30" CornerRadius="18" Padding="22">
+        <StackPanel Spacing="14">
+          <TextBlock Text="Safety controls" FontSize="20" FontWeight="SemiBold" Foreground="#F4F5FF"/>
+          <TextBlock Text="Microphone" Foreground="#B6BED5"/>
+          <TextBlock Text="OFF · not requested" FontWeight="SemiBold" Foreground="#80D9C5"/>
+          <TextBlock Text="Desktop control" Foreground="#B6BED5" Margin="0,8,0,0"/>
+          <TextBlock Text="DISABLED · adapter not installed" FontWeight="SemiBold" Foreground="#F1C27D" TextWrapping="Wrap"/>
+          <Button x:Name="StopButton" Content="Emergency stop" Click="Stop_Click" Margin="0,12,0,0"/>
+          <TextBlock Text="Actions remain disabled until platform permissions, adapters and approval checks are implemented." TextWrapping="Wrap" FontSize="12" Foreground="#9FA8C5"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+    <TextBlock Grid.Row="2" Text="JT DIGITAL WORLD  ·  LOCAL-FIRST  ·  USER CONTROLLED" FontSize="11" Foreground="#7984A6" HorizontalAlignment="Center"/>
+  </Grid>
+</Window>
