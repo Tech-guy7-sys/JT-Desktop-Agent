@@ -4,7 +4,7 @@
     <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <DockPanel MouseLeftButtonDown="Header_MouseLeftButtonDown">
         <Border Width="38" Height="38" CornerRadius="11" Background="#20213B" BorderBrush="#746DAB" BorderThickness="1"><TextBlock Text="JT" Foreground="#C9C4FF" FontSize="18" FontWeight="Black" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-        <StackPanel Margin="11,0,0,0" VerticalAlignment="Center"><TextBlock Text="J TECH DIGITAL WORLD" FontSize="9" FontWeight="Bold" Foreground="#F7F5FF" LetterSpacing="1.2"/><TextBlock Text="JEFF · DESKTOP COMPANION" FontSize="8" Foreground="#9B9BB8" Margin="0,4,0,0" LetterSpacing="1.2"/></StackPanel>
+        <StackPanel Margin="11,0,0,0" VerticalAlignment="Center"><TextBlock Text="J TECH DIGITAL WORLD" FontSize="9" FontWeight="Bold" Foreground="#F7F5FF"/><TextBlock Text="JEFF · DESKTOP COMPANION" FontSize="8" Foreground="#9B9BB8" Margin="0,4,0,0"/></StackPanel>
         <Button Content="×" Click="Hide_Click" Width="32" Height="32" Padding="0" HorizontalAlignment="Right" Background="#24243C" FontSize="17"/>
       </DockPanel>
       <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="0,12">
