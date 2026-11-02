@@ -59,7 +59,7 @@
                 <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                   <StackPanel><TextBlock Text="VOICE INPUT" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><TextBlock Text="Speak and review your words" Foreground="#F7F5FF" FontSize="17" FontWeight="Bold" Margin="0,6,0,0"/></StackPanel>
                   <TextBox x:Name="TranscriptBox" Grid.Row="1" Margin="0,14,0,14" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="13" MinHeight="125" Text="Your recognized speech will appear here. Review it before using it."/>
-                  <WrapPanel Grid.Row="2"><Button Content="Stop" Click="Stop_Click"/><Button Content="Clear" Click="Clear_Click" Margin="8,0,0,0"/></WrapPanel>
+                  <WrapPanel Grid.Row="2"><Button Content="Stop" Click="Stop_Click"/><Button Content="Clear" Click="Clear_Click" Margin="8,0,0,0"/><Button Content="Review a file" Click="ReviewFile_Click" Margin="8,0,0,0"/></WrapPanel>
                 </Grid>
               </Border>
               <StackPanel Grid.Column="1">
