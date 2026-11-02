@@ -1,28 +1,80 @@
-<Window x:Class="AgentJeff.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="JT Desktop Agent · J Tech Digital World" Height="760" Width="1060" MinHeight="650" MinWidth="850" Background="#090B16" Foreground="#F4F5FF" WindowStartupLocation="CenterScreen">
-  <Grid Margin="26">
-    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-    <DockPanel Grid.Row="0" Margin="0,0,0,22">
-      <Border Background="#252A4A" CornerRadius="12" Padding="12" DockPanel.Dock="Left"><TextBlock Text="JT" FontSize="20" FontWeight="Bold" Foreground="#AEB5FF"/></Border>
-      <StackPanel Margin="14,0,0,0" VerticalAlignment="Center"><TextBlock Text="JT Desktop Agent" FontSize="25" FontWeight="SemiBold"/><TextBlock Text="DESKTOP ASSISTANT · VOICE CONSOLE" Foreground="#A4A9C5" FontSize="11" Margin="0,3,0,0"/></StackPanel>
-      <Border Background="#162C2A" CornerRadius="12" Padding="12,7" HorizontalAlignment="Right"><TextBlock x:Name="StatusText" Text="READY · MICROPHONE OFF" Foreground="#77E2C2" FontSize="11" FontWeight="SemiBold"/></Border>
-    </DockPanel>
-    <Border Grid.Row="1" Background="#15182B" CornerRadius="18" Padding="20" Margin="0,0,0,18">
-      <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="330"/></Grid.ColumnDefinitions>
-        <StackPanel Margin="0,0,24,0"><TextBlock Text="Talk naturally. Keep control." FontSize="22" FontWeight="SemiBold"/><TextBlock Text="This Windows app uses installed Windows speech components. Listening starts only when you press the button; nothing is recorded in the background." TextWrapping="Wrap" Foreground="#B6BAD1" Margin="0,8,0,0" LineHeight="22"/></StackPanel>
-        <StackPanel Grid.Column="1"><TextBlock Text="ASSISTANT VOICE" Foreground="#A4A9C5" FontSize="11" Margin="0,0,0,7"/><ComboBox x:Name="VoicePicker" Height="36" Background="#20243A" Foreground="#17192A" SelectionChanged="VoicePicker_SelectionChanged"/><Button Content="Preview voice" Click="PreviewVoice_Click" Margin="0,9,0,0" Height="34" Background="#292F50" Foreground="White" BorderThickness="0"/></StackPanel>
-      </Grid>
+<Window x:Class="AgentJeff.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="JT Desktop Agent · J Tech Digital World" Height="900" Width="1440" MinHeight="760" MinWidth="1050" Background="#080914" Foreground="#F4F3FF" WindowStartupLocation="CenterScreen">
+  <Window.Resources>
+    <LinearGradientBrush x:Key="JTAccent" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#78E5DF"/><GradientStop Color="#9690FF" Offset="0.55"/><GradientStop Color="#C4A2FF" Offset="1"/></LinearGradientBrush>
+    <Style TargetType="Button"><Setter Property="Foreground" Value="#F7F6FF"/><Setter Property="Background" Value="#24243C"/><Setter Property="BorderBrush" Value="#494365"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="16,11"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Cursor" Value="Hand"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="bd" Property="BorderBrush" Value="#A69BFF"/><Setter TargetName="bd" Property="Background" Value="#34304F"/></Trigger><Trigger Property="IsPressed" Value="True"><Setter TargetName="bd" Property="Opacity" Value=".78"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="bd" Property="Opacity" Value=".4"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style>
+    <Style TargetType="TextBox"><Setter Property="Background" Value="#0C0D1B"/><Setter Property="Foreground" Value="#F5F3FF"/><Setter Property="CaretBrush" Value="#9E96FF"/><Setter Property="BorderBrush" Value="#34334F"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="13"/></Style>
+    <Style TargetType="ComboBox"><Setter Property="Background" Value="#17172A"/><Setter Property="Foreground" Value="#18182A"/><Setter Property="BorderBrush" Value="#45415F"/><Setter Property="Padding" Value="8"/></Style>
+  </Window.Resources>
+  <Grid>
+    <Grid.RowDefinitions><RowDefinition Height="76"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <Border Grid.Row="0" Background="#E6080A16" BorderBrush="#1FFFFFFF" BorderThickness="0,0,0,1">
+      <DockPanel Margin="42,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Left">
+          <Border Width="43" Height="43" CornerRadius="13" Background="{StaticResource JTAccent}" Padding="1"><Border CornerRadius="12" Background="#0D1020"><TextBlock Text="JT" FontSize="21" FontWeight="Black" FontStyle="Italic" Foreground="#DDFBFF" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border></Border>
+          <StackPanel Margin="12,0,0,0" VerticalAlignment="Center"><TextBlock Text="J TECH DIGITAL WORLD" FontSize="12" FontWeight="ExtraBold" Foreground="#F7F5FF" LetterSpacing="1.3"/><TextBlock Text="JT DESKTOP AGENT" FontSize="9" Foreground="#8D8DAE" Margin="0,4,0,0" LetterSpacing="1.8"/></StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+          <Border Background="#132B2929" BorderBrush="#315D594B" BorderThickness="1" CornerRadius="9" Padding="12,8" Margin="0,0,12,0"><TextBlock x:Name="StatusText" Text="READY · MICROPHONE OFF" Foreground="#83E5C8" FontSize="10" FontWeight="Bold"/></Border>
+          <Button Content="Open Security Center" Click="OpenSecurity_Click" Padding="14,9"/>
+        </StackPanel>
+      </DockPanel>
     </Border>
-    <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition Width="1.25*"/><ColumnDefinition Width="0.75*"/></Grid.ColumnDefinitions>
-      <Border Background="#15182B" CornerRadius="18" Padding="20" Margin="0,0,10,0"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-        <StackPanel><TextBlock Text="VOICE INPUT" FontSize="12" FontWeight="SemiBold" Foreground="#AEB5FF"/><TextBlock Text="Speak and review your words" FontSize="19" FontWeight="SemiBold" Margin="0,5,0,0"/></StackPanel>
-        <TextBox x:Name="TranscriptBox" Grid.Row="1" Margin="0,16,0,16" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="#0D1020" Foreground="#F4F5FF" BorderBrush="#2C3150" Padding="14" FontSize="15" Text="Your recognized speech will appear here. Review it before using it."/>
-        <WrapPanel Grid.Row="2"><Button x:Name="ListenButton" Content="Start listening" Click="Listen_Click" Padding="18,10" Background="#929BFF" Foreground="#101326" BorderThickness="0" FontWeight="SemiBold"/><Button Content="Stop" Click="Stop_Click" Padding="18,10" Margin="8,0,0,0" Background="#292F50" Foreground="White" BorderThickness="0"/><Button Content="Clear" Click="Clear_Click" Padding="18,10" Margin="8,0,0,0" Background="#292F50" Foreground="White" BorderThickness="0"/></WrapPanel>
-      </Grid></Border>
-      <StackPanel Grid.Column="1" Margin="10,0,0,0">
-        <Border Background="#15182B" CornerRadius="18" Padding="20"><StackPanel><TextBlock Text="VOICE PROFILE &amp; SECURITY" Foreground="#AEB5FF" FontSize="12" FontWeight="SemiBold"/><TextBlock Text="Honest status" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,12"/><TextBlock Text="Speaker verification is not implemented yet. This companion is a desktop overlay only; Windows prevents ordinary apps from drawing over the secure sign-in lock screen. Voice enrollment remains disabled until a real speaker-verification model is integrated." TextWrapping="Wrap" Foreground="#C4C7DA" LineHeight="22"/><Border Background="#302719" CornerRadius="10" Padding="12" Margin="0,15,0,0"><TextBlock Text="Not enrolled · Speaker verification OFF" TextWrapping="Wrap" Foreground="#FFD38A" FontSize="12"/></Border><Button Content="Show desktop companion" Click="ShowCompanion_Click" Height="40" Margin="0,12,0,0" Background="#929BFF" Foreground="#101326" BorderThickness="0" FontWeight="SemiBold"/><Button Content="Open Jeff Security Center" Click="OpenSecurity_Click" Height="40" Margin="0,8,0,0" Background="#292F50" Foreground="White" BorderThickness="0"/><TextBlock Text="Always on top after sign-in · user can stop or hide it" Foreground="#B6BAD1" TextWrapping="Wrap" Margin="0,7,0,0" FontSize="11"/></StackPanel></Border>
-        <Border Background="#15182B" CornerRadius="18" Padding="20" Margin="0,16,0,0"><StackPanel><TextBlock Text="SPEAK TEXT" Foreground="#AEB5FF" FontSize="12" FontWeight="SemiBold"/><TextBlock Text="Play your reviewed transcript" FontSize="18" FontWeight="SemiBold" Margin="0,6,0,10"/><TextBlock Text="This uses the selected voice installed on Windows." Foreground="#B6BAD1" TextWrapping="Wrap" Margin="0,0,0,12"/><Button Content="Speak transcript" Click="SpeakTranscript_Click" Height="40" Background="#292F50" Foreground="White" BorderThickness="0"/><Button Content="Stop speaking" Click="StopSpeaking_Click" Height="38" Margin="0,8,0,0" Background="#292F50" Foreground="White" BorderThickness="0"/></StackPanel></Border>
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+      <StackPanel>
+        <Grid Margin="64,54,64,36">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="1.04*"/><ColumnDefinition Width="0.96*"/></Grid.ColumnDefinitions>
+          <StackPanel VerticalAlignment="Center" Margin="0,0,45,0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Ellipse Width="7" Height="7" Fill="#78E5DF" Margin="0,0,9,0"/><TextBlock Text="YOUR DESKTOP. YOUR COMMAND." Foreground="#A8A0FF" FontSize="10" FontWeight="Bold" LetterSpacing="2"/></StackPanel>
+            <TextBlock Text="Meet Jeff.&#10;Make more happen." FontSize="48" FontWeight="ExtraBold" LineHeight="55" Foreground="#FAF9FF" Margin="0,22,0,16"/>
+            <TextBlock Text="A smarter desktop companion from JT Digital World. Use voice, review your work, and stay in control of every permission." Foreground="#A9AAC4" FontSize="15" TextWrapping="Wrap" LineHeight="25" MaxWidth="560"/>
+            <WrapPanel Margin="0,26,0,0"><Button x:Name="ListenButton" Content="Start voice input" Click="Listen_Click" Background="{StaticResource JTAccent}" Foreground="#101122" BorderThickness="0" Padding="20,13"/><Button Content="Show floating Jeff" Click="ShowCompanion_Click" Margin="10,0,0,0" Padding="20,13"/></WrapPanel>
+            <TextBlock Text="MICROPHONE IS OFF UNTIL YOU START IT · YOU CAN STOP AT ANY TIME" Foreground="#777994" FontSize="9" FontWeight="Bold" Margin="0,20,0,0" LetterSpacing="1"/>
+          </StackPanel>
+          <Border Grid.Column="1" CornerRadius="22" BorderBrush="#514A7B" BorderThickness="1" Background="#121326" Padding="22">
+            <Border.Effect><DropShadowEffect Color="#756BFF" BlurRadius="42" ShadowDepth="0" Opacity=".17"/></Border.Effect>
+            <StackPanel>
+              <DockPanel><TextBlock Text="JEFF AI · DESKTOP COMPANION" FontSize="10" FontWeight="Bold" Foreground="#A9A1FF" LetterSpacing="1.6"/><Border DockPanel.Dock="Right" Background="#172D2A" CornerRadius="7" Padding="8,5"><TextBlock Text="LOCAL SESSION" Foreground="#82E4C7" FontSize="8" FontWeight="Bold"/></Border></DockPanel>
+              <Grid Height="170" Margin="0,15,0,10">
+                <Ellipse Width="150" Height="150" Stroke="#34345A" StrokeThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Ellipse Width="120" Height="120" Stroke="#6660A4" StrokeThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity=".7"/>
+                <Ellipse Width="88" Height="88" Fill="{StaticResource JTAccent}" HorizontalAlignment="Center" VerticalAlignment="Center"><Ellipse.Effect><DropShadowEffect Color="#9B91FF" BlurRadius="35" ShadowDepth="0" Opacity=".6"/></Ellipse.Effect></Ellipse>
+                <TextBlock Text="JT" FontSize="29" FontWeight="Black" FontStyle="Italic" Foreground="#101224" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Grid>
+              <TextBlock Text="Ready when you are." FontSize="23" FontWeight="Bold" Foreground="#F7F5FF" HorizontalAlignment="Center"/>
+              <TextBlock Text="Your assistant is ready. Voice capture remains off until you choose to start." Foreground="#999BB8" FontSize="11" TextWrapping="Wrap" TextAlignment="Center" Margin="12,7,12,18"/>
+              <UniformGrid Columns="2" Rows="2">
+                <Border Background="#1A1A30" CornerRadius="10" Padding="12" Margin="4"><StackPanel><TextBlock Text="VOICE INPUT" Foreground="#A8A0FF" FontSize="9" FontWeight="Bold"/><TextBlock Text="Manual &amp; visible" Foreground="#E8E6F6" FontSize="12" Margin="0,5,0,0"/></StackPanel></Border>
+                <Border Background="#1A1A30" CornerRadius="10" Padding="12" Margin="4"><StackPanel><TextBlock Text="PRIVACY" Foreground="#7DE0C5" FontSize="9" FontWeight="Bold"/><TextBlock Text="User controlled" Foreground="#E8E6F6" FontSize="12" Margin="0,5,0,0"/></StackPanel></Border>
+                <Border Background="#1A1A30" CornerRadius="10" Padding="12" Margin="4"><StackPanel><TextBlock Text="COMPANION" Foreground="#D4A5FF" FontSize="9" FontWeight="Bold"/><TextBlock Text="Floating panel" Foreground="#E8E6F6" FontSize="12" Margin="0,5,0,0"/></StackPanel></Border>
+                <Border Background="#1A1A30" CornerRadius="10" Padding="12" Margin="4"><StackPanel><TextBlock Text="JT ECOSYSTEM" Foreground="#8DC7FF" FontSize="9" FontWeight="Bold"/><TextBlock Text="App links planned" Foreground="#E8E6F6" FontSize="12" Margin="0,5,0,0"/></StackPanel></Border>
+              </UniformGrid>
+            </StackPanel>
+          </Border>
+        </Grid>
+        <Border Background="#0D0E1D" Padding="64,32" BorderBrush="#1EFFFFFF" BorderThickness="0,1">
+          <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.9*"/></Grid.ColumnDefinitions>
+            <StackPanel><TextBlock Text="YOUR WORKSPACE" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold" LetterSpacing="1.8"/><TextBlock Text="Talk. Review. Take action." Foreground="#F7F5FF" FontSize="25" FontWeight="Bold" Margin="0,9,0,0"/><TextBlock Text="Speech tools and assistant controls available in this build." Foreground="#999BB8" FontSize="11" Margin="0,8,20,0" TextWrapping="Wrap"/></StackPanel>
+            <Grid Grid.Column="1"><Grid.ColumnDefinitions><ColumnDefinition Width="1.3*"/><ColumnDefinition Width="0.7*"/></Grid.ColumnDefinitions>
+              <Border Background="#141528" BorderBrush="#35324F" BorderThickness="1" CornerRadius="15" Padding="17" Margin="0,0,9,0">
+                <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                  <StackPanel><TextBlock Text="VOICE INPUT" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><TextBlock Text="Speak and review your words" Foreground="#F7F5FF" FontSize="17" FontWeight="Bold" Margin="0,6,0,0"/></StackPanel>
+                  <TextBox x:Name="TranscriptBox" Grid.Row="1" Margin="0,14,0,14" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="13" MinHeight="125" Text="Your recognized speech will appear here. Review it before using it."/>
+                  <WrapPanel Grid.Row="2"><Button Content="Stop" Click="Stop_Click"/><Button Content="Clear" Click="Clear_Click" Margin="8,0,0,0"/></WrapPanel>
+                </Grid>
+              </Border>
+              <StackPanel Grid.Column="1">
+                <Border Background="#141528" BorderBrush="#35324F" BorderThickness="1" CornerRadius="15" Padding="16">
+                  <StackPanel><TextBlock Text="VOICE PROFILE" Foreground="#A8A0FF" FontSize="9" FontWeight="Bold"/><TextBlock Text="Choose Jeff's voice" Foreground="#F7F5FF" FontSize="15" FontWeight="Bold" Margin="0,6,0,10"/><ComboBox x:Name="VoicePicker" Height="34" SelectionChanged="VoicePicker_SelectionChanged"/><Button Content="Preview voice" Click="PreviewVoice_Click" Margin="0,9,0,0"/></StackPanel>
+                </Border>
+                <Border Background="#141528" BorderBrush="#35324F" BorderThickness="1" CornerRadius="15" Padding="16" Margin="0,10,0,0">
+                  <StackPanel><TextBlock Text="SPEAK TEXT" Foreground="#7DE0C5" FontSize="9" FontWeight="Bold"/><TextBlock Text="Listen to reviewed text" Foreground="#F7F5FF" FontSize="14" FontWeight="Bold" Margin="0,6,0,10"/><Button Content="Speak transcript" Click="SpeakTranscript_Click"/><Button Content="Stop speaking" Click="StopSpeaking_Click" Margin="0,8,0,0"/></StackPanel>
+                </Border>
+              </StackPanel>
+            </Grid>
+          </Grid>
+        </Border>
+        <TextBlock Text="JT DESKTOP AGENT  ·  J TECH DIGITAL WORLD     •     Privacy: microphone use is user-started. This build does not record audio in the background or implement wake-word listening." Foreground="#747792" FontSize="9" TextWrapping="Wrap" Margin="64,22,64,28"/>
       </StackPanel>
-    </Grid>
-    <TextBlock Grid.Row="3" Text="Privacy: microphone use is user-started. Speech processing uses Windows speech services available on this PC. This build does not save audio or implement speaker biometrics. The companion cannot appear over the secure Windows lock screen." Foreground="#858BAA" TextWrapping="Wrap" Margin="0,18,0,0" FontSize="11"/>
+    </ScrollViewer>
   </Grid>
 </Window>
