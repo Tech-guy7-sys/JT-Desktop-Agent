@@ -18,5 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="tests/**/*.cs" />
+    <Compile Remove="cross-platform/**/*.cs" />
+    <AvaloniaResource Remove="cross-platform/**/*.axaml" />
   </ItemGroup>
 </Project>
