@@ -22,7 +22,7 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 ## Security boundaries
 JT Desktop Agent is **not a replacement for Microsoft Defender or another trusted antivirus**. The initial file triage is heuristic and can miss threats or report false positives. It does not provide full real-time protection, guaranteed malware detection, or automatic quarantine. Keep Windows security protection enabled.
 
-Speech recognition does not verify speaker identity; voice input alone must not authorize sensitive actions. Some operations can be blocked by Windows policy or permissions.
+Speech recognition does not verify speaker identity; voice input alone must not authorize sensitive actions. The file-review handoff displays metadata and a SHA-256 digest only; a hash is not a malware verdict. Some operations can be blocked by Windows policy or permissions.
 
 ## JT ecosystem integration
 - Product: JT Desktop Agent
