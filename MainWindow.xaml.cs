@@ -19,7 +19,8 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<string> _activity = new();
     private VoiceCompanionWindow? _companion;
     private SecurityCenterWindow? _securityCenter;
-    private readonly string[] _commands = { "Review a file", "Start or stop voice input", "Open Security Center", "Show floating Jeff", "Read transcript aloud", "Stop speaking", "Copy transcript", "Save transcript", "Clear transcript", "Clear recent activity" };
+    private AppLauncherWindow? _appLauncher;
+    private readonly string[] _commands = { "Review a file", "Start or stop voice input", "Open Security Center", "Show floating Jeff", "Read transcript aloud", "Stop speaking", "Copy transcript", "Save transcript", "Clear transcript", "Clear recent activity", "Find and open an installed app" };
 
     public MainWindow()
     {
@@ -229,6 +230,21 @@ public partial class MainWindow : Window
 
     private void OpenCommandPalette_Click(object sender, RoutedEventArgs e) => OpenCommandPalette();
 
+    private void OpenAppLauncher_Click(object sender, RoutedEventArgs e) => OpenAppLauncher();
+
+    private void OpenAppLauncher()
+    {
+        if (_appLauncher is null || !_appLauncher.IsVisible)
+        {
+            _appLauncher = new AppLauncherWindow { Owner = this };
+            _appLauncher.AppLaunched += _ => LogActivity("Application launched from app launcher");
+            _appLauncher.Closed += (_, _) => _appLauncher = null;
+            _appLauncher.Show();
+            LogActivity("App launcher opened");
+        }
+        else _appLauncher.Activate();
+    }
+
     private void OpenCommandPalette()
     {
         CommandPaletteOverlay.Visibility = Visibility.Visible;
@@ -301,6 +317,7 @@ public partial class MainWindow : Window
             case "Save transcript": SaveTranscript_Click(this, new RoutedEventArgs()); break;
             case "Clear transcript": Clear_Click(this, new RoutedEventArgs()); break;
             case "Clear recent activity": ClearActivity_Click(this, new RoutedEventArgs()); break;
+            case "Find and open an installed app": OpenAppLauncher(); break;
         }
     }
 
