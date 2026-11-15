@@ -4,6 +4,7 @@ using System.Speech.Recognition;
 using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.Win32;
 
 namespace AgentJeff;
@@ -17,6 +18,7 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<string> _activity = new();
     private VoiceCompanionWindow? _companion;
     private SecurityCenterWindow? _securityCenter;
+    private readonly string[] _commands = { "Review a file", "Start or stop voice input", "Open Security Center", "Show floating Jeff", "Read transcript aloud", "Stop speaking", "Copy transcript", "Save transcript", "Clear transcript", "Clear recent activity" };
 
     public MainWindow()
     {
@@ -222,6 +224,106 @@ public partial class MainWindow : Window
         _activity.Clear();
         try { if (File.Exists(ActivityFilePath)) File.Delete(ActivityFilePath); }
         catch (Exception ex) { MessageBox.Show(this, ex.Message, "Could not clear activity", MessageBoxButton.OK, MessageBoxImage.Warning); }
+    }
+
+    private void OpenCommandPalette_Click(object sender, RoutedEventArgs e) => OpenCommandPalette();
+
+    private void OpenCommandPalette()
+    {
+        CommandPaletteOverlay.Visibility = Visibility.Visible;
+        CommandSearchBox.Text = string.Empty;
+        CommandResults.ItemsSource = _commands;
+        if (CommandResults.Items.Count > 0) CommandResults.SelectedIndex = 0;
+        CommandSearchBox.Focus();
+    }
+
+    private void CloseCommandPalette_Click(object sender, RoutedEventArgs e) => CloseCommandPalette();
+
+    private void CloseCommandPalette()
+    {
+        CommandPaletteOverlay.Visibility = Visibility.Collapsed;
+        Focus();
+    }
+
+    private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.K && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+        {
+            OpenCommandPalette();
+            e.Handled = true;
+            return;
+        }
+        if (CommandPaletteOverlay.Visibility != Visibility.Visible) return;
+        if (e.Key == Key.Escape)
+        {
+            CloseCommandPalette();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Enter)
+        {
+            RunSelectedCommand();
+            e.Handled = true;
+        }
+    }
+
+    private void CommandSearch_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (CommandResults is null) return;
+        var query = CommandSearchBox.Text.Trim();
+        var matches = _commands.Where(command => command.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray();
+        CommandResults.ItemsSource = matches;
+        if (CommandResults.Items.Count > 0) CommandResults.SelectedIndex = 0;
+    }
+
+    private void CommandResults_MouseDoubleClick(object sender, MouseButtonEventArgs e) => RunSelectedCommand();
+
+    private void CommandPaletteBackdrop_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (ReferenceEquals(e.OriginalSource, CommandPaletteOverlay)) CloseCommandPalette();
+    }
+
+    private void CommandPalettePanel_MouseDown(object sender, MouseButtonEventArgs e) => e.Handled = true;
+
+    private void RunSelectedCommand()
+    {
+        if (CommandResults.SelectedItem is not string command) return;
+        CloseCommandPalette();
+        switch (command)
+        {
+            case "Review a file": ReviewFile_Click(this, new RoutedEventArgs()); break;
+            case "Start or stop voice input": Listen_Click(this, new RoutedEventArgs()); break;
+            case "Open Security Center": OpenSecurity_Click(this, new RoutedEventArgs()); break;
+            case "Show floating Jeff": ShowCompanion_Click(this, new RoutedEventArgs()); break;
+            case "Read transcript aloud": SpeakTranscript_Click(this, new RoutedEventArgs()); break;
+            case "Stop speaking": StopSpeaking_Click(this, new RoutedEventArgs()); break;
+            case "Copy transcript": CopyTranscript_Click(this, new RoutedEventArgs()); break;
+            case "Save transcript": SaveTranscript_Click(this, new RoutedEventArgs()); break;
+            case "Clear transcript": Clear_Click(this, new RoutedEventArgs()); break;
+            case "Clear recent activity": ClearActivity_Click(this, new RoutedEventArgs()); break;
+        }
+    }
+
+    private void CopyTranscript_Click(object sender, RoutedEventArgs e)
+    {
+        var text = TranscriptBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(text) || text.StartsWith("Your recognized speech", StringComparison.Ordinal)) return;
+        try { Clipboard.SetText(text); SetStatus("TRANSCRIPT COPIED"); LogActivity("Transcript copied to clipboard"); }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Clipboard unavailable", MessageBoxButton.OK, MessageBoxImage.Warning); }
+    }
+
+    private void SaveTranscript_Click(object sender, RoutedEventArgs e)
+    {
+        var text = TranscriptBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(text) || text.StartsWith("Your recognized speech", StringComparison.Ordinal)) return;
+        var dialog = new SaveFileDialog { Title = "Save reviewed transcript", FileName = "JT-Jeff-Transcript.txt", Filter = "Text files (*.txt)|*.txt|Markdown files (*.md)|*.md", AddExtension = true, OverwritePrompt = true };
+        if (dialog.ShowDialog(this) != true) return;
+        try
+        {
+            File.WriteAllText(dialog.FileName, text);
+            SetStatus("TRANSCRIPT SAVED");
+            LogActivity("Transcript saved by user");
+        }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Could not save transcript", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void SetStatus(string status) => StatusText.Text = status.ToUpperInvariant();
