@@ -15,7 +15,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
           <Border Background="#132B2929" BorderBrush="#315D594B" BorderThickness="1" CornerRadius="9" Padding="12,8" Margin="0,0,12,0"><TextBlock x:Name="StatusText" Text="READY · MICROPHONE OFF" Foreground="#83E5C8" FontSize="10" FontWeight="Bold"/></Border>
-          <Button Content="⌘  Commands · Ctrl+K" Click="OpenCommandPalette_Click" Padding="14,9" Margin="0,0,9,0"/><Button Content="Open Security Center" Click="OpenSecurity_Click" Padding="14,9"/>
+          <Button Content="⌘  Commands · Ctrl+K" Click="OpenCommandPalette_Click" Padding="14,9" Margin="0,0,9,0"/><Button Content="Find an app" Click="OpenAppLauncher_Click" Padding="14,9" Margin="0,0,9,0"/><Button Content="Open Security Center" Click="OpenSecurity_Click" Padding="14,9"/>
         </StackPanel>
       </DockPanel>
     </Border>
@@ -58,11 +58,11 @@
               <TextBlock Text="COMMAND DECK" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/>
               <TextBlock Text="Get something done." Foreground="#F7F5FF" FontSize="23" FontWeight="Bold" Margin="0,7,0,5"/>
               <TextBlock Text="Choose a focused action. Jeff shows what is happening and keeps microphone access under your control." Foreground="#999BB8" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,16"/>
-              <UniformGrid Columns="4">
+              <UniformGrid Columns="5">
                 <Button Content="Review a file" Click="ReviewFile_Click" Margin="0,0,8,0" Padding="12,14"/>
                 <Button Content="Voice input" Click="Listen_Click" Margin="0,0,8,0" Padding="12,14"/>
                 <Button Content="Open security" Click="OpenSecurity_Click" Margin="0,0,8,0" Padding="12,14"/>
-                <Button Content="Show companion" Click="ShowCompanion_Click" Padding="12,14"/>
+                <Button Content="Show companion" Click="ShowCompanion_Click" Margin="0,0,8,0" Padding="12,14"/><Button Content="Find an app" Click="OpenAppLauncher_Click" Padding="12,14"/>
               </UniformGrid>
             </StackPanel>
             <Border Grid.Column="1" Background="#15172A" BorderBrush="#35324F" BorderThickness="1" CornerRadius="14" Padding="15">
