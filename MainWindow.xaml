@@ -1,4 +1,4 @@
-<Window x:Class="AgentJeff.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="JT Desktop Agent · J Tech Digital World" Height="900" Width="1440" MinHeight="760" MinWidth="1050" Background="#080914" Foreground="#F4F3FF" WindowStartupLocation="CenterScreen">
+<Window x:Class="AgentJeff.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="JT Desktop Agent · J Tech Digital World" Height="900" Width="1440" MinHeight="760" MinWidth="1050" Background="#080914" Foreground="#F4F3FF" WindowStartupLocation="CenterScreen" PreviewKeyDown="Window_PreviewKeyDown">
   <Window.Resources>
     <LinearGradientBrush x:Key="JTAccent" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#78E5DF"/><GradientStop Color="#9690FF" Offset="0.55"/><GradientStop Color="#C4A2FF" Offset="1"/></LinearGradientBrush>
     <Style TargetType="Button"><Setter Property="Foreground" Value="#F7F6FF"/><Setter Property="Background" Value="#24243C"/><Setter Property="BorderBrush" Value="#494365"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="16,11"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Cursor" Value="Hand"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="bd" Property="BorderBrush" Value="#A69BFF"/><Setter TargetName="bd" Property="Background" Value="#34304F"/></Trigger><Trigger Property="IsPressed" Value="True"><Setter TargetName="bd" Property="Opacity" Value=".78"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="bd" Property="Opacity" Value=".4"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style>
@@ -15,7 +15,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
           <Border Background="#132B2929" BorderBrush="#315D594B" BorderThickness="1" CornerRadius="9" Padding="12,8" Margin="0,0,12,0"><TextBlock x:Name="StatusText" Text="READY · MICROPHONE OFF" Foreground="#83E5C8" FontSize="10" FontWeight="Bold"/></Border>
-          <Button Content="Open Security Center" Click="OpenSecurity_Click" Padding="14,9"/>
+          <Button Content="⌘  Commands · Ctrl+K" Click="OpenCommandPalette_Click" Padding="14,9" Margin="0,0,9,0"/><Button Content="Find an app" Click="OpenAppLauncher_Click" Padding="14,9" Margin="0,0,9,0"/><Button Content="Open Security Center" Click="OpenSecurity_Click" Padding="14,9"/>
         </StackPanel>
       </DockPanel>
     </Border>
@@ -51,6 +51,31 @@
             </StackPanel>
           </Border>
         </Grid>
+        <Border Background="#101224" Padding="64,26" BorderBrush="#1EFFFFFF" BorderThickness="0,1">
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="1.25*"/><ColumnDefinition Width="0.75*"/></Grid.ColumnDefinitions>
+            <StackPanel Margin="0,0,28,0">
+              <TextBlock Text="COMMAND DECK" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/>
+              <TextBlock Text="Get something done." Foreground="#F7F5FF" FontSize="23" FontWeight="Bold" Margin="0,7,0,5"/>
+              <TextBlock Text="Choose a focused action. Jeff shows what is happening and keeps microphone access under your control." Foreground="#999BB8" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,16"/>
+              <UniformGrid Columns="5">
+                <Button Content="Review a file" Click="ReviewFile_Click" Margin="0,0,8,0" Padding="12,14"/>
+                <Button Content="Voice input" Click="Listen_Click" Margin="0,0,8,0" Padding="12,14"/>
+                <Button Content="Open security" Click="OpenSecurity_Click" Margin="0,0,8,0" Padding="12,14"/>
+                <Button Content="Show companion" Click="ShowCompanion_Click" Margin="0,0,8,0" Padding="12,14"/><Button Content="Find an app" Click="OpenAppLauncher_Click" Padding="12,14"/>
+              </UniformGrid>
+            </StackPanel>
+            <Border Grid.Column="1" Background="#15172A" BorderBrush="#35324F" BorderThickness="1" CornerRadius="14" Padding="15">
+              <StackPanel>
+                <DockPanel Margin="0,0,0,9"><TextBlock Text="RECENT ACTIVITY" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><Button DockPanel.Dock="Right" Content="Clear" Click="ClearActivity_Click" Padding="8,4" FontSize="10"/></DockPanel>
+                <ListBox x:Name="ActivityList" Background="Transparent" BorderThickness="0" Foreground="#D9D9EE" FontSize="10" MaxHeight="126" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                  <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="Padding" Value="5,5"/><Setter Property="BorderThickness" Value="0,0,0,1"/><Setter Property="BorderBrush" Value="#172033"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/></Style></ListBox.ItemContainerStyle>
+                </ListBox>
+                <TextBlock Text="Activity stores action labels only — not transcripts, file contents or file paths." Foreground="#777D9B" FontSize="9" TextWrapping="Wrap" Margin="0,8,0,0"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
         <Border Background="#0D0E1D" Padding="64,32" BorderBrush="#1EFFFFFF" BorderThickness="0,1">
           <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.9*"/></Grid.ColumnDefinitions>
             <StackPanel><TextBlock Text="YOUR WORKSPACE" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><TextBlock Text="Talk. Review. Take action." Foreground="#F7F5FF" FontSize="25" FontWeight="Bold" Margin="0,9,0,0"/><TextBlock Text="Speech tools and assistant controls available in this build." Foreground="#999BB8" FontSize="11" Margin="0,8,20,0" TextWrapping="Wrap"/></StackPanel>
@@ -59,7 +84,7 @@
                 <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                   <StackPanel><TextBlock Text="VOICE INPUT" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><TextBlock Text="Speak and review your words" Foreground="#F7F5FF" FontSize="17" FontWeight="Bold" Margin="0,6,0,0"/></StackPanel>
                   <TextBox x:Name="TranscriptBox" Grid.Row="1" Margin="0,14,0,14" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="13" MinHeight="125" Text="Your recognized speech will appear here. Review it before using it."/>
-                  <WrapPanel Grid.Row="2"><Button Content="Stop" Click="Stop_Click"/><Button Content="Clear" Click="Clear_Click" Margin="8,0,0,0"/><Button Content="Review a file" Click="ReviewFile_Click" Margin="8,0,0,0"/></WrapPanel>
+                  <WrapPanel Grid.Row="2"><Button Content="Stop" Click="Stop_Click"/><Button Content="Clear" Click="Clear_Click" Margin="8,0,0,0"/><Button Content="Review a file" Click="ReviewFile_Click" Margin="8,0,0,0"/><Button Content="Copy text" Click="CopyTranscript_Click" Margin="8,0,0,0"/><Button Content="Save text" Click="SaveTranscript_Click" Margin="8,0,0,0"/></WrapPanel>
                 </Grid>
               </Border>
               <StackPanel Grid.Column="1">
@@ -76,5 +101,23 @@
         <TextBlock Text="JT DESKTOP AGENT  ·  J TECH DIGITAL WORLD     •     Privacy: microphone use is user-started. This build does not record audio in the background or implement wake-word listening." Foreground="#747792" FontSize="9" TextWrapping="Wrap" Margin="64,22,64,28"/>
       </StackPanel>
     </ScrollViewer>
+    <Border x:Name="CommandPaletteOverlay" Grid.RowSpan="2" Panel.ZIndex="30" Background="#B9080914" Visibility="Collapsed" MouseDown="CommandPaletteBackdrop_MouseDown">
+      <Grid>
+        <Border Width="640" MaxHeight="560" VerticalAlignment="Top" Margin="0,115,0,0" Background="#17182B" BorderBrush="#6E65A8" BorderThickness="1" CornerRadius="18" Padding="22" HorizontalAlignment="Center" MouseDown="CommandPalettePanel_MouseDown">
+          <Border.Effect><DropShadowEffect Color="#8C82FF" BlurRadius="42" ShadowDepth="0" Opacity=".22"/></Border.Effect>
+          <StackPanel>
+            <DockPanel Margin="0,0,0,14">
+              <StackPanel><TextBlock Text="JT COMMAND PALETTE" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><TextBlock Text="Find an action and run it." Foreground="#F7F5FF" FontSize="19" FontWeight="Bold" Margin="0,5,0,0"/></StackPanel>
+              <Button DockPanel.Dock="Right" Content="Esc" Click="CloseCommandPalette_Click" Padding="10,6" VerticalAlignment="Top"/>
+            </DockPanel>
+            <TextBox x:Name="CommandSearchBox" FontSize="15" Margin="0,0,0,12" Height="46" VerticalContentAlignment="Center" ToolTip="Search actions" TextChanged="CommandSearch_TextChanged"/>
+            <ListBox x:Name="CommandResults" MinHeight="230" MaxHeight="360" Background="#101122" Foreground="#F4F3FF" BorderBrush="#34334F" BorderThickness="1" FontSize="13" Padding="6" MouseDoubleClick="CommandResults_MouseDoubleClick">
+              <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="Padding" Value="12,11"/><Setter Property="Margin" Value="0,2"/><Setter Property="Background" Value="#181A30"/><Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Style.Triggers><Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#34304F"/><Setter Property="Foreground" Value="#FFFFFF"/></Trigger><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#292743"/></Trigger></Style.Triggers></Style></ListBox.ItemContainerStyle>
+            </ListBox>
+            <TextBlock Text="↑ ↓ Navigate   ·   Enter Run   ·   Esc Close" Foreground="#777D9B" FontSize="10" Margin="2,12,0,0"/>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
   </Grid>
 </Window>
