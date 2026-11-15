@@ -1,0 +1,15 @@
+<Window x:Class="AgentJeff.AppLauncherWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="JT App Launcher" Height="650" Width="760" MinHeight="480" MinWidth="560" Background="#080914" Foreground="#F4F3FF" WindowStartupLocation="CenterOwner">
+  <Window.Resources>
+    <Style TargetType="Button"><Setter Property="Foreground" Value="#F7F6FF"/><Setter Property="Background" Value="#24243C"/><Setter Property="BorderBrush" Value="#494365"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="15,10"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Cursor" Value="Hand"/></Style>
+    <Style TargetType="TextBox"><Setter Property="Background" Value="#0C0D1B"/><Setter Property="Foreground" Value="#F5F3FF"/><Setter Property="CaretBrush" Value="#9E96FF"/><Setter Property="BorderBrush" Value="#34334F"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="14"/></Style>
+  </Window.Resources>
+  <Grid Margin="26">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel Margin="0,0,0,18"><TextBlock Text="JT APP LAUNCHER" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><TextBlock Text="Find an app. Open it." FontSize="27" FontWeight="ExtraBold" Margin="0,7,0,5"/><TextBlock Text="Search Start Menu shortcuts available to this Windows account. Jeff only opens the shortcut you select." Foreground="#999BB8" FontSize="11" TextWrapping="Wrap"/></StackPanel>
+    <TextBox x:Name="SearchBox" Grid.Row="1" Height="48" FontSize="15" VerticalContentAlignment="Center" Margin="0,0,0,14" TextChanged="SearchBox_TextChanged" ToolTip="Search installed app shortcuts"/>
+    <ListBox x:Name="AppList" Grid.Row="2" Background="#101122" Foreground="#F4F3FF" BorderBrush="#34334F" BorderThickness="1" Padding="8" MouseDoubleClick="AppList_MouseDoubleClick">
+      <ListBox.ItemTemplate><DataTemplate><Border Padding="12,10" BorderBrush="#25263D" BorderThickness="0,0,0,1"><StackPanel><TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Bold"/><TextBlock Text="{Binding Path}" Foreground="#8588A8" FontSize="9" TextTrimming="CharacterEllipsis" Margin="0,4,0,0"/></StackPanel></Border></DataTemplate></ListBox.ItemTemplate>
+    </ListBox>
+    <DockPanel Grid.Row="3" Margin="0,14,0,0"><TextBlock x:Name="StatusText" Text="Loading Start Menu shortcuts…" Foreground="#8588A8" FontSize="10" VerticalAlignment="Center"/><Button DockPanel.Dock="Right" Content="Open selected" Click="OpenSelected_Click" Background="#7770E8" BorderThickness="0" Padding="18,11"/></DockPanel>
+  </Grid>
+</Window>
