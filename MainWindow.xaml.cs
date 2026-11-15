@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Collections.ObjectModel;
 using System.Speech.Recognition;
 using System.Speech.Synthesis;
 using System.Windows;
@@ -13,12 +14,15 @@ public partial class MainWindow : Window
     private SpeechRecognitionEngine? _recognizer;
     private bool _listening;
     private readonly List<InstalledVoice> _voices = new();
+    private readonly ObservableCollection<string> _activity = new();
     private VoiceCompanionWindow? _companion;
     private SecurityCenterWindow? _securityCenter;
 
     public MainWindow()
     {
         InitializeComponent();
+        ActivityList.ItemsSource = _activity;
+        LoadRecentActivity();
         LoadVoices();
         LoadRecognizer();
         Closed += (_, _) => { StopListening(); _synth.Dispose(); _recognizer?.Dispose(); };
@@ -89,6 +93,7 @@ public partial class MainWindow : Window
         {
             _recognizer.RecognizeAsync(RecognizeMode.Multiple);
             _listening = true;
+            LogActivity("Voice input started");
             ListenButton.Content = "Listening… (click to stop)";
             SetStatus("LISTENING · MICROPHONE ACTIVE");
         }
@@ -100,6 +105,7 @@ public partial class MainWindow : Window
     {
         if (!_listening) return;
         _listening = false;
+        LogActivity("Voice input stopped");
         try { _recognizer?.RecognizeAsyncCancel(); } catch { }
         ListenButton.Content = "Start listening";
         SetStatus("READY · MICROPHONE OFF");
@@ -123,10 +129,10 @@ public partial class MainWindow : Window
     }
     private void Speak(string text)
     {
-        try { _synth.SpeakAsyncCancelAll(); _synth.SpeakAsync(text); SetStatus("SPEAKING"); }
+        try { _synth.SpeakAsyncCancelAll(); _synth.SpeakAsync(text); SetStatus("SPEAKING"); LogActivity("Read-aloud started"); }
         catch (Exception ex) { MessageBox.Show(this, ex.Message, "Text-to-speech error", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
-    private void StopSpeaking_Click(object sender, RoutedEventArgs e) { _synth.SpeakAsyncCancelAll(); SetStatus(_listening ? "LISTENING · MICROPHONE ACTIVE" : "READY · MICROPHONE OFF"); }
+    private void StopSpeaking_Click(object sender, RoutedEventArgs e) { _synth.SpeakAsyncCancelAll(); LogActivity("Read-aloud stopped"); SetStatus(_listening ? "LISTENING · MICROPHONE ACTIVE" : "READY · MICROPHONE OFF"); }
     private void Clear_Click(object sender, RoutedEventArgs e) => TranscriptBox.Clear();
 
     private void ShowCompanion_Click(object sender, RoutedEventArgs e)
@@ -136,10 +142,12 @@ public partial class MainWindow : Window
             _companion = new VoiceCompanionWindow();
             _companion.Closed += (_, _) => _companion = null;
             _companion.Show();
+            LogActivity("Desktop companion opened");
         }
         else
         {
             _companion.Activate();
+            LogActivity("Desktop companion focused");
         }
     }
     private void OpenSecurity_Click(object sender, RoutedEventArgs e)
@@ -149,8 +157,10 @@ public partial class MainWindow : Window
             _securityCenter = new SecurityCenterWindow { Owner = this };
             _securityCenter.Closed += (_, _) => _securityCenter = null;
             _securityCenter.Show();
+            LogActivity("Security Center opened");
         }
         else _securityCenter.Activate();
+        LogActivity("Security Center opened");
     }
 
     private async void ReviewFile_Click(object sender, RoutedEventArgs e)
@@ -162,6 +172,7 @@ public partial class MainWindow : Window
             Multiselect = false
         };
         if (picker.ShowDialog(this) != true) return;
+        LogActivity("Selected file review requested");
         try
         {
             SetStatus("REVIEWING SELECTED FILE");
@@ -174,6 +185,43 @@ public partial class MainWindow : Window
             SetStatus("FILE REVIEW FAILED");
             MessageBox.Show(this, ex.Message, "JT Desktop Agent · File review", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+    }
+
+    private static string ActivityFilePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "JTechDigitalWorld", "JTDesktopAgent", "activity.log");
+
+    private void LoadRecentActivity()
+    {
+        try
+        {
+            if (!File.Exists(ActivityFilePath)) return;
+            foreach (var entry in File.ReadAllLines(ActivityFilePath).TakeLast(10).Reverse()) _activity.Add(entry);
+        }
+        catch { /* Activity history is optional; the agent remains usable if storage is unavailable. */ }
+    }
+
+    private void LogActivity(string action)
+    {
+        var entry = $"{DateTime.Now:yyyy-MM-dd HH:mm} · {action}";
+        _activity.Insert(0, entry);
+        while (_activity.Count > 10) _activity.RemoveAt(_activity.Count - 1);
+        try
+        {
+            var directory = Path.GetDirectoryName(ActivityFilePath);
+            if (!string.IsNullOrWhiteSpace(directory)) Directory.CreateDirectory(directory);
+            File.AppendAllText(ActivityFilePath, entry + Environment.NewLine);
+            var lines = File.ReadAllLines(ActivityFilePath);
+            if (lines.Length > 100) File.WriteAllLines(ActivityFilePath, lines.TakeLast(100));
+        }
+        catch { /* Logging must never block a user-requested action. */ }
+    }
+
+    private void ClearActivity_Click(object sender, RoutedEventArgs e)
+    {
+        var answer = MessageBox.Show(this, "Clear the recent action labels stored on this device?", "Clear activity", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (answer != MessageBoxResult.Yes) return;
+        _activity.Clear();
+        try { if (File.Exists(ActivityFilePath)) File.Delete(ActivityFilePath); }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Could not clear activity", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void SetStatus(string status) => StatusText.Text = status.ToUpperInvariant();

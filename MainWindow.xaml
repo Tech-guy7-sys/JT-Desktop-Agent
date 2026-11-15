@@ -51,6 +51,31 @@
             </StackPanel>
           </Border>
         </Grid>
+        <Border Background="#101224" Padding="64,26" BorderBrush="#1EFFFFFF" BorderThickness="0,1">
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="1.25*"/><ColumnDefinition Width="0.75*"/></Grid.ColumnDefinitions>
+            <StackPanel Margin="0,0,28,0">
+              <TextBlock Text="COMMAND DECK" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/>
+              <TextBlock Text="Get something done." Foreground="#F7F5FF" FontSize="23" FontWeight="Bold" Margin="0,7,0,5"/>
+              <TextBlock Text="Choose a focused action. Jeff shows what is happening and keeps microphone access under your control." Foreground="#999BB8" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,16"/>
+              <UniformGrid Columns="4">
+                <Button Content="Review a file" Click="ReviewFile_Click" Margin="0,0,8,0" Padding="12,14"/>
+                <Button Content="Voice input" Click="Listen_Click" Margin="0,0,8,0" Padding="12,14"/>
+                <Button Content="Open security" Click="OpenSecurity_Click" Margin="0,0,8,0" Padding="12,14"/>
+                <Button Content="Show companion" Click="ShowCompanion_Click" Padding="12,14"/>
+              </UniformGrid>
+            </StackPanel>
+            <Border Grid.Column="1" Background="#15172A" BorderBrush="#35324F" BorderThickness="1" CornerRadius="14" Padding="15">
+              <StackPanel>
+                <DockPanel Margin="0,0,0,9"><TextBlock Text="RECENT ACTIVITY" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><Button DockPanel.Dock="Right" Content="Clear" Click="ClearActivity_Click" Padding="8,4" FontSize="10"/></DockPanel>
+                <ListBox x:Name="ActivityList" Background="Transparent" BorderThickness="0" Foreground="#D9D9EE" FontSize="10" MaxHeight="126" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                  <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="Padding" Value="5,5"/><Setter Property="BorderThickness" Value="0,0,0,1"/><Setter Property="BorderBrush" Value="#172033"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/></Style></ListBox.ItemContainerStyle>
+                </ListBox>
+                <TextBlock Text="Activity stores action labels only — not transcripts, file contents or file paths." Foreground="#777D9B" FontSize="9" TextWrapping="Wrap" Margin="0,8,0,0"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
         <Border Background="#0D0E1D" Padding="64,32" BorderBrush="#1EFFFFFF" BorderThickness="0,1">
           <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.9*"/></Grid.ColumnDefinitions>
             <StackPanel><TextBlock Text="YOUR WORKSPACE" Foreground="#A8A0FF" FontSize="10" FontWeight="Bold"/><TextBlock Text="Talk. Review. Take action." Foreground="#F7F5FF" FontSize="25" FontWeight="Bold" Margin="0,9,0,0"/><TextBlock Text="Speech tools and assistant controls available in this build." Foreground="#999BB8" FontSize="11" Margin="0,8,20,0" TextWrapping="Wrap"/></StackPanel>
