@@ -16,26 +16,13 @@
       </Grid>
     </Border>
     <Grid Grid.Row="1">
-      <Grid.ColumnDefinitions><ColumnDefinition Width="226"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-      <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E5E8EF" BorderThickness="0,0,1,0">
-        <DockPanel Margin="14,18">
-          <StackPanel DockPanel.Dock="Top">
-            <TextBlock Text="WORKSPACE" Foreground="#9AA1AE" FontSize="9" FontWeight="Bold" Margin="10,9,0,10"/>
-            <TabControl x:Name="WorkspaceTabs" TabStripPlacement="Left" Background="Transparent" BorderThickness="0" SelectedIndex="0">
-              <TabControl.Resources><Style TargetType="TabControl"><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TabControl"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TabPanel IsItemsHost="True" Background="Transparent" Margin="0,0,0,10"/><Border Grid.Row="1" BorderThickness="0"/></Grid></ControlTemplate></Setter.Value></Setter></Style></TabControl.Resources>
-              <TabItem Header="⌂   Overview"/>
-              <TabItem Header="◉   Voice & transcript"/>
-              <TabItem Header="⌘   Quick actions"/>
-            </TabControl>
-          </StackPanel>
-          <StackPanel DockPanel.Dock="Bottom" Margin="4,0,4,8"><Border Height="1" Background="#E8EAF0" Margin="0,0,0,13"/><TextBlock Text="CONTROL & PRIVACY" Foreground="#9AA1AE" FontSize="9" FontWeight="Bold" Margin="8,0,0,9"/><Border Background="#F7F8FB" CornerRadius="9" Padding="11"><StackPanel><TextBlock Text="Microphone" Foreground="#7A8292" FontSize="10"/><TextBlock Text="Off until you start it" Foreground="#303748" FontSize="11" FontWeight="SemiBold" Margin="0,4,0,0"/></StackPanel></Border><TextBlock Text="Desktop actions require user approval. This build does not run background voice capture." TextWrapping="Wrap" Foreground="#9299A7" FontSize="9" Margin="8,10,8,0"/></StackPanel>
-        </DockPanel>
-      </Border>
-      <TabControl Grid.Column="1" x:Name="ContentTabs" SelectedIndex="0" Background="Transparent" BorderThickness="0" Margin="26,22,26,22">
-        <TabControl.Resources><Style TargetType="TabControl"><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TabControl"><Grid><TabPanel Visibility="Collapsed"/><ContentPresenter ContentSource="SelectedContent"/></Grid></ControlTemplate></Setter.Value></Setter></Style></TabControl.Resources>
+      <TabControl x:Name="ContentTabs" TabStripPlacement="Left" SelectedIndex="0" Background="Transparent" BorderThickness="0">
+        <TabControl.Resources>
+          <Style TargetType="TabControl"><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TabControl"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="226"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E5E8EF" BorderThickness="0,0,1,0"><DockPanel Margin="14,18"><TextBlock DockPanel.Dock="Top" Text="WORKSPACE" Foreground="#9AA1AE" FontSize="9" FontWeight="Bold" Margin="10,9,0,12"/><TabPanel IsItemsHost="True" Background="Transparent"/><StackPanel DockPanel.Dock="Bottom" Margin="4,0,4,8"><Border Height="1" Background="#E8EAF0" Margin="0,0,0,13"/><TextBlock Text="CONTROL &amp; PRIVACY" Foreground="#9AA1AE" FontSize="9" FontWeight="Bold" Margin="8,0,0,9"/><Border Background="#F7F8FB" CornerRadius="9" Padding="11"><StackPanel><TextBlock Text="Microphone" Foreground="#7A8292" FontSize="10"/><TextBlock Text="Off until you start it" Foreground="#303748" FontSize="11" FontWeight="SemiBold" Margin="0,4,0,0"/></StackPanel></Border><TextBlock Text="Desktop actions require approval. No background voice capture is active." TextWrapping="Wrap" Foreground="#9299A7" FontSize="9" Margin="8,10,8,0"/></StackPanel></DockPanel></Border><Border Grid.Column="1" Background="#F5F6FA" Padding="27,22"><ContentPresenter ContentSource="SelectedContent"/></Border></Grid></ControlTemplate></Setter.Value></Setter></Style>
+        </TabControl.Resources>
         <TabItem Header="Overview">
           <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel MaxWidth="1160" HorizontalAlignment="Left">
-            <TextBlock Text="MONDAY · YOUR WORKSPACE" Foreground="#6258D6" FontSize="10" FontWeight="Bold" Margin="0,8,0,10"/>
+            <TextBlock Text="DESKTOP OVERVIEW" Foreground="#6258D6" FontSize="10" FontWeight="Bold" Margin="0,8,0,10"/>
             <TextBlock Text="Good to have you here." Foreground="#202432" FontSize="31" FontWeight="Bold"/>
             <TextBlock Text="Jeff AI is ready to help you work through desktop tasks with clear controls and visible permissions." Foreground="#788091" FontSize="13" Margin="0,8,0,22"/>
             <Grid Margin="0,0,0,15"><Grid.ColumnDefinitions><ColumnDefinition Width="1.35*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
@@ -70,7 +57,7 @@
             <Border Background="#FFFFFF" BorderBrush="#E5E8EF" BorderThickness="1" CornerRadius="12" Padding="19" Margin="5,5,0,0"><StackPanel><TextBlock Text="VOICE" Foreground="#C17D48" FontSize="9" FontWeight="Bold"/><TextBlock Text="Speech workspace" Foreground="#252B3A" FontSize="15" FontWeight="Bold" Margin="0,7"/><Button Content="Open voice tools" Click="Listen_Click" HorizontalAlignment="Left"/></StackPanel></Border>
           </UniformGrid><TextBlock Text="No action runs in the background. Each available action is started explicitly by you." Foreground="#838B99" FontSize="10" Margin="0,15,0,0"/></StackPanel>
         </TabItem>
+      
       </TabControl>
-    </Grid>
-  </Grid>
+    </Grid>  </Grid>
 </Window>
