@@ -31,7 +31,7 @@ jobs:
             package: macos
           - label: macOS Apple Silicon ARM64
             rid: osx-arm64
-            runner: macos-14
+            runner: macos-15
             package: macos
           - label: Linux x64
             rid: linux-x64
