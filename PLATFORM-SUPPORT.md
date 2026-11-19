@@ -17,7 +17,7 @@ The cross-platform shell currently provides the JT-branded workspace, local read
 
 ## Verification and release status
 
-The macOS/Linux workflow must pass on its native runners before those build targets are described as CI-passing. A successful build is not proof of code signing, notarization, installation/runtime QA, or feature parity with Windows. Do not publish signed-build claims or full cross-platform feature claims until those checks are completed.
+The macOS/Linux build workflow must pass on its native runners before those targets are described as CI-passing. A separate `cross-platform-preview-v*` prerelease workflow packages the limited Avalonia shell for macOS and Linux; it must remain labelled preview-only. A successful build is not proof of code signing, notarization, installation/runtime QA, or feature parity with Windows. Do not publish signed-build claims or full cross-platform feature claims until those checks are completed.
 
 ## Security requirements
 

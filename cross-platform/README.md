@@ -19,4 +19,4 @@ dotnet build cross-platform/JTDesktopAgent.CrossPlatform.csproj -c Release
 dotnet publish cross-platform/JTDesktopAgent.CrossPlatform.csproj -c Release -r osx-arm64 --self-contained true
 ```
 
-CI builds native artifacts on macOS and Linux runners. Successful compilation and packaging do not constitute signing, notarization, installation testing, or full feature parity with the Windows WPF application.
+The `Build JT Desktop Agent macOS and Linux` workflow checks native builds. The `Publish JT Desktop Agent macOS and Linux Preview` workflow creates an unsigned prerelease with ZIP app bundles for macOS Intel/Apple Silicon and TAR.GZ archives for Linux x64/ARM64 when manually dispatched or triggered by a `cross-platform-preview-v*` tag. It is deliberately a prerelease: successful compilation and packaging do not constitute signing, notarization, installation testing, or full feature parity with the Windows WPF application. The release notes must retain these limitations.
