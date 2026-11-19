@@ -85,7 +85,7 @@ jobs:
           set -euo pipefail
           APP="release-assets/JT-Desktop-Agent-${VERSION}-${RID}.app"
           mkdir -p "$APP/Contents/MacOS"
-          cp "artifacts/publish/${RID}/JTDesktopAgent" "$APP/Contents/MacOS/JTDesktopAgent"
+          cp -R "artifacts/publish/${RID}/." "$APP/Contents/MacOS/"
           chmod +x "$APP/Contents/MacOS/JTDesktopAgent"
           cat > "$APP/Contents/Info.plist" <<PLIST
           <?xml version="1.0" encoding="UTF-8"?>
@@ -112,7 +112,7 @@ jobs:
           set -euo pipefail
           DIR="release-assets/JT-Desktop-Agent-${VERSION}-${RID}"
           mkdir -p "$DIR"
-          cp "artifacts/publish/${RID}/JTDesktopAgent" "$DIR/JTDesktopAgent"
+          cp -R "artifacts/publish/${RID}/." "$DIR/"
           chmod +x "$DIR/JTDesktopAgent"
           cp cross-platform/README.md "$DIR/README.txt"
           cat > "$DIR/RUN.txt" <<'RUN'
