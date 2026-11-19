@@ -1,0 +1,178 @@
+name: Publish JT Desktop Agent macOS and Linux Preview
+on:
+  push:
+    tags:
+      - "cross-platform-preview-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Preview version, for example 0.2.0-preview.1"
+        required: true
+        default: "0.2.0-preview.1"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jt-desktop-agent-cross-platform-preview-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build ${{ matrix.label }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: macOS Intel x64
+            rid: osx-x64
+            runner: macos-15-intel
+            package: macos
+          - label: macOS Apple Silicon ARM64
+            rid: osx-arm64
+            runner: macos-14
+            package: macos
+          - label: Linux x64
+            rid: linux-x64
+            runner: ubuntu-latest
+            package: linux
+          - label: Linux ARM64
+            rid: linux-arm64
+            runner: ubuntu-24.04-arm
+            package: linux
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Select and validate preview version
+        id: meta
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            VERSION="$INPUT_VERSION"
+          else
+            VERSION="${GITHUB_REF_NAME#cross-platform-preview-v}"
+          fi
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid preview version: $VERSION" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Restore
+        run: dotnet restore cross-platform/JTDesktopAgent.CrossPlatform.csproj
+      - name: Build
+        run: dotnet build cross-platform/JTDesktopAgent.CrossPlatform.csproj --configuration Release --no-restore
+      - name: Publish self-contained platform app
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+          RID: ${{ matrix.rid }}
+        run: dotnet publish cross-platform/JTDesktopAgent.CrossPlatform.csproj --configuration Release --runtime "${{ matrix.rid }}" --self-contained true -p:PublishSingleFile=true -p:Version="${{ steps.meta.outputs.version }}" --output "artifacts/publish/${{ matrix.rid }}"
+      - name: Package macOS application bundle
+        if: ${{ matrix.package == 'macos' }}
+        shell: bash
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+          RID: ${{ matrix.rid }}
+        run: |
+          set -euo pipefail
+          APP="release-assets/JT-Desktop-Agent-${VERSION}-${RID}.app"
+          mkdir -p "$APP/Contents/MacOS"
+          cp "artifacts/publish/${RID}/JTDesktopAgent" "$APP/Contents/MacOS/JTDesktopAgent"
+          chmod +x "$APP/Contents/MacOS/JTDesktopAgent"
+          cat > "$APP/Contents/Info.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>CFBundleExecutable</key><string>JTDesktopAgent</string>
+            <key>CFBundleIdentifier</key><string>world.jtech.desktopagent.preview</string>
+            <key>CFBundleName</key><string>JT Desktop Agent Preview</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+            <key>CFBundleShortVersionString</key><string>${VERSION}</string>
+            <key>CFBundleVersion</key><string>1</string>
+            <key>LSMinimumSystemVersion</key><string>12.0</string>
+          </dict></plist>
+          PLIST
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "release-assets/JT-Desktop-Agent-${VERSION}-${RID}.zip"
+          rm -rf "$APP"
+      - name: Package Linux application archive
+        if: ${{ matrix.package == 'linux' }}
+        shell: bash
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+          RID: ${{ matrix.rid }}
+        run: |
+          set -euo pipefail
+          DIR="release-assets/JT-Desktop-Agent-${VERSION}-${RID}"
+          mkdir -p "$DIR"
+          cp "artifacts/publish/${RID}/JTDesktopAgent" "$DIR/JTDesktopAgent"
+          chmod +x "$DIR/JTDesktopAgent"
+          cp cross-platform/README.md "$DIR/README.txt"
+          cat > "$DIR/RUN.txt" <<'RUN'
+          Run ./JTDesktopAgent from a graphical desktop session.
+          This is a limited preview shell. Desktop automation and process control are disabled.
+          RUN
+          tar -czf "release-assets/JT-Desktop-Agent-${VERSION}-${RID}.tar.gz" -C release-assets "JT-Desktop-Agent-${VERSION}-${RID}"
+          rm -rf "$DIR"
+      - name: Upload preview package
+        uses: actions/upload-artifact@v4
+        with:
+          name: jt-desktop-agent-preview-${{ matrix.rid }}
+          path: release-assets/*
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: Publish prerelease packages
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download platform packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: jt-desktop-agent-preview-*
+          path: release-assets
+          merge-multiple: true
+      - name: Create SHA-256 manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd release-assets
+          find . -maxdepth 1 -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+      - name: Select release tag
+        id: release
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            echo "tag=cross-platform-preview-v${INPUT_VERSION}" >> "$GITHUB_OUTPUT"
+            echo "version=${INPUT_VERSION}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+            echo "version=${GITHUB_REF_NAME#cross-platform-preview-v}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish unsigned preview release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release.outputs.tag }}
+          name: JT Desktop Agent ${{ steps.release.outputs.version }} — macOS and Linux Preview
+          prerelease: true
+          generate_release_notes: true
+          body: |
+            **Experimental cross-platform preview — not feature parity with the Windows app.**
+
+            Includes the Avalonia desktop shell for macOS Intel/Apple Silicon and Linux x64/ARM64.
+            Current scope is the workspace UI, local read-only file metadata/SHA-256 review, and a visible stop control.
+
+            Desktop automation, accessibility control, process launching, window management, speech and microphone access are not enabled in this shell. A file hash is not a malware verdict.
+
+            Packages are unsigned. macOS packages are not notarized. Build success is not a substitute for manual installation and runtime testing on the target operating system.
+          files: release-assets/*
